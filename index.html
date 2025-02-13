@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Child Element Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; direction: rtl; text-align: right; }
+        .container { max-width: 600px; margin: auto; }
+        h2 { text-align: center; }
+        .question { margin-bottom: 15px; }
+        .result { display: none; padding: 15px; background: #f4f4f4; margin-top: 20px; border: 1px solid #ccc; }
+        button { display: block; width: 100%; padding: 10px; margin-top: 10px; background: #28a745; color: white; border: none; cursor: pointer; }
+        button:hover { background: #218838; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>استبيان عناصر الطفل / Child Element Questionnaire</h2>
+        <form id="quiz-form">
+            <div id="questions"></div>
+            <button type="submit">إرسال / Submit</button>
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const elements = {
+            Wood: {
+                traits: "نشط، فضولي، قوي الإرادة، سريع التصرف، يحب الفوز، يتعلم بالممارسة، يحب المخاطر. / Energetic, curious, strong-willed, quick to act, loves to win, learns by doing, loves danger.",
+                careers: "رائد أعمال، مستجيب للطوارئ، طبيب، فنان، محامٍ، معلم. / Entrepreneur, Emergency Responder, Medical Careers, Artist, Lawyer, Teacher.",
+                advice: "زيادة شرب الماء، ممارسة التمارين، تجربة فنون القتال والقيادة. / Drink more water, practice exercises, explore martial arts and leadership.",
+                questions: [
+                    "هل يستمتع طفلك بتجربة أشياء جديدة ويحب التحديات / Does your child enjoy trying new things and taking on challenges",
+                    "هل يتعلم طفلك من خلال النشاط البدني / Does your child learn physically",
+                    "هل يحب طفلك إثارة المخاطر / Does your child love the thrill of danger",
+                    "طفلك بيعمل تبول لا إرادي بشكل متكرر؟ / Does your child have recurrent bed wetting?",
+                    "طفلك بيعصب جدًا أو بيغضب لما يضايق؟/Does your child have explosive anger when upset?",
+                    "طفلك بيحب السكريات أو الصودا أو الزبدة؟/ Does your child crave stimulants like sugar, soda, or butter?",
+                    "طفلك دايمًا واثق في نفسه جدًا ومش بيحب يطلب مساعدة من حد؟/Does your child often show overconfidence or not want help from others?",
+                    "طفلك بيكره لما حد يطلب منه حاجة أو لما يحس إنه متقيد؟/Does your child dislike being told what to do or feeling restricted?"
+                ]
+            },
+            Fire: {
+                traits: "حماسي، اجتماعي، مفعم بالطاقة، مرح، مضحك، متفائل. / Excitable, social, full of energy, playful, funny, optimistic.",
+                careers: "معلم، صحفي، طاهٍ، عامل حضانة. / Teacher, Journalist, Chef, Daycare Worker.",
+                advice: "تشجيع الأنشطة الاجتماعية، استخدام الألعاب التفاعلية، تعزيز مهارات التعبير. / Encourage social activities, use interactive games, enhance expressive skills.",
+                questions: [
+                    "هل يحب طفلك التواجد حول الآخرين / Does your child love being around other people",
+                    "هل تتغير مزاجات طفلك بسرعة / Does your child often change moods quickly",
+                    "هل يعاني طفلك من صعوبة في النوم / Does your child have difficulty falling asleep",
+                    "طفلك بيشتكي من الإسهال أو آلام المعدة كتير؟ / Does your child experience diarrhea or stomach discomfort often?",
+                    "طفلك بيحب الحلويات أو الأكل الحراق أو التلج؟ / Does your child crave sweets, spicy food or ice?",
+                    "Does your child get flushed or sweat a lot? / طفلك وشه بيحمر أو بيعرق كتير؟",
+                    "Is your child easily panicked or upset by small issues? / طفلك بيتوتر أو يتضايق بسرعة من حاجات بسيطة؟",
+                    "طفلك دايمًا بيشتكي إنه زهقان؟ / Does your child complain of being bored often?",
+                    "Does your child tend to act impulsively or unpredictably? / طفلك بيعمل حاجات بطريقة متهورة أو غير متوقعة؟"
+                ]
+            },
+            Earth: {
+                traits: "حنون، مفكر، مخلص، أحيانًا قلق. / Caring, kind, thoughtful, loyal, sometimes worried and anxious.",
+                careers: "أخصائي اجتماعي، معلم، فنان، طبيب. / Social Worker, Teacher, Artist, Healthcare Professional.",
+                advice: "تشجيع التعاون، ممارسة الأنشطة الإبداعية، توفير بيئة داعمة. / Encourage teamwork, engage in creative activities, provide a supportive environment.",
+                questions: [
+                    "طفلك بيعاني من وجع في معدته أو عسر هضم؟/Does your child have stomach aches or indigestion?",
+                    "طفلك دايمًا مهتم بالناس وبيفكر فيهم؟/Is your child caring and always thinking about others?",
+                    "Does your child overeat?/طفلك بيأكل أكتر من الطبيعي؟",
+                    "Does your child feel anxious when away from loved ones or when not feeling accepted?/طفلك بيقلق لما يكون بعيد عن الناس اللي بيحبهم أو لما يحس إنه مش مقبول؟",
+                    "Does your child have trouble setting boundaries or respecting personal space?/ طفلك عنده مشكلة في احترام الحدود الشخصية أو إنه يحط حدود لنفسه؟",
+                    "Does your child often socialize excessively?/طفلك بيحب الاختلاط والاندماج مع الناس بشكل كبير؟",
+                    "Does your child crave sweets and carbohydrates like sugar or bread?/طفلك بيحب السكريات والنشويات زي السكر أو العيش؟",
+                    "Is your child disorganized?/طفلك مش منظم؟",
+                    "Is your child sometimes whiny, needy, or clingy?/طفلك ساعات بيكون زنّان أو محتاج اهتمام زيادة أو متعلق بزيادة؟"
+                ]
+            },
+            Metal: {
+                traits: "منظم، دقيق، يركز على التفاصيل. / Organized, careful, detail-focused.",
+                careers: "مهندس، محاسب، معمار، عالم. / Engineer, Accountant, Architect, Scientist.",
+                advice: "تعزيز التفكير المنطقي، توفير تحديات ذهنية، دعم التنظيم. / Encourage logical thinking, provide mental challenges, support organization.",
+                questions: [
+                    "هل يحب طفلك الروتين ويكره المفاجآت / Does your child like having a routine and dislike surprises or changes",
+                    "هل يشتهي طفلك أطعمة غير عادية / Does your child crave unusual food",
+                    "هل ينزعج طفلك عند ارتكاب الأخطاء / Does your child get upset when they make mistakes or when things go wrong",
+                    "طفلك بيحب كل حاجة تكون مرتبة ونظيفة؟ / Does your child like things to be orderly and tidy?",
+                    "Does your child tend to blame others when something goes wrong? / طفلك بيلوم الناس كتير لما يحصل حاجة غلط؟",
+                    "Is your child very sensitive to smells, tastes, or textures? / طفلك حساس جدًا للروائح أو الطعم أو الملمس؟",
+                    "Does your child get extremely cold easily? / طفلك بيحس بالبرد بسرعة؟",
+                    "Does your child experience constipation? / طفلك بيعاني من إمساك؟",
+                    "Does your child have stiff joints? / طفلك جلده أو شعره ناشف؟",
+                    "Does your child experience dry skin or hair? / طفلك مفاصله ناشفة أو عنده خشونة؟",
+                ]
+            },
+            Water: {
+                traits: "خيالي، هادئ، يحب الأحلام، يأخذ وقته. / Imaginative, quiet, loves to dream, takes time.",
+                careers: "كاتب، فنان، موسيقي، طبيب نفسي. / Writer, Artist, Musician, Psychologist.",
+                advice: "تعزيز الإبداع، تقديم أنشطة استرخاء، تشجيع الكتابة والرسم. / Foster creativity, provide relaxation activities, encourage writing and drawing.",
+                questions: [
+                    "هل لدى طفلك خيال واسع ويحب أحلام اليقظة / Does your child have a big imagination and enjoy daydreaming",
+                    "هل يشعر طفلك بالراحة عند البقاء بمفرده / Does your child feel comfortable being alone",
+                    "هل يواجه طفلك صعوبة في إنهاء المهام / Does your child have trouble finishing tasks or feel like giving up",
+                    "طفلك بيجيله أفكار سلبية وبيفضل محبوس فيها؟ / Does your child have negative thoughts or get stuck in a negative mood?",
+                    "طفلك بياخد وقته في كل حاجة؟ / Does your child take their time doing things?",
+                    "طفلك بيلاقي صعوبة يعبر عن أفكاره أو مشاعره؟ / Does your child have difficulty expressing their ideas or emotions?",
+                    "طفلك عنده مشكلة إنه يحفز نفسه يعمل حاجة؟ / Does your child struggle with being motivated to do things?",
+                    "طفلك عنده ذاكرة قوية؟ / Does your child have a good memory?",
+                    "طفلك بيعمل مجهود جسدي قليل؟ / Does your child experience low physical stamina?",
+                    "Does your child crave salty, meats or hot foods? / طفلك بيحب الأكلات المالحة، اللحوم أو الأكلات السخنة؟",
+                         ]
+            }
+        };
+
+        function populateQuestions() {
+            const questionsDiv = document.getElementById('questions');
+            questionsDiv.innerHTML = '';
+            
+            Object.keys(elements).forEach(element => {
+                elements[element].questions.forEach((question, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'question';
+                    div.innerHTML = `
+                        <label>${question}</label>
+                        <select name="${element}-${index}" required>
+                            <option value="" disabled selected>اختر / Select</option>
+                            <option value="1">نادرًا / Rarely</option>
+                            <option value="2">أحيانًا / Sometimes</option>
+                            <option value="3">غالبًا / Often</option>
+                        </select>`;
+                    questionsDiv.appendChild(div);
+                });
+            });
+        }
+
+        document.getElementById('quiz-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            let allAnswered = true;
+            
+            formData.forEach(value => {
+                if (!value) allAnswered = false;
+            });
+            
+            if (!allAnswered) {
+                alert("يرجى الإجابة على جميع الأسئلة / Please answer all questions.");
+                return;
+            }
+
+            const scores = { Wood: 0, Fire: 0, Earth: 0 };
+            formData.forEach((value, key) => {
+                const elementType = key.split('-')[0];
+                scores[elementType] += parseInt(value);
+            });
+            
+            const highestScore = Math.max(...Object.values(scores));
+            const dominantElements = Object.keys(scores).filter(key => scores[key] === highestScore);
+            
+            let resultHTML = "<h3>العناصر المسيطرة / Dominant Elements:</h3>";
+            dominantElements.forEach(element => {
+                resultHTML += `
+                    <strong>${element}</strong><br>
+                    <strong>الصفات / Traits:</strong> ${elements[element].traits}<br>
+                    <strong>المهن المحتملة / Careers:</strong> ${elements[element].careers}<br>
+                    <strong>النصائح / Advice:</strong> ${elements[element].advice}<br><br>
+                `;
+            });
+
+            document.getElementById('result').innerHTML = resultHTML;
+            document.getElementById('result').style.display = 'block';
+        });
+
+        document.addEventListener('DOMContentLoaded', populateQuestions);
+    </script>
+</body>
+</html>
