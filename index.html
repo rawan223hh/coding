@@ -116,7 +116,13 @@
                 elements[element].questions.forEach((question, index) => {
                     const div = document.createElement('div');
                     div.className = 'question';
-                    div.innerHTML = `<label>${question}</label><select name="${element}-${index}" required><option value="" disabled selected>Select</option><option value="1">Rarely</option><option value="2">Sometimes</option><option value="3">Often</option></select>`;
+                    div.innerHTML = `<label>${question}</label>
+                        <select name="${element}-${index}" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="1">Rarely</option>
+                            <option value="2">Sometimes</option>
+                            <option value="3">Often</option>
+                        </select>`;
                     questionsDiv.appendChild(div);
                 });
             });
@@ -126,10 +132,25 @@
             event.preventDefault();
             const formData = new FormData(event.target);
             let scores = { Wood: 0, Fire: 0, Earth: 0, Metal: 0, Water: 0 };
-            formData.forEach((value, key) => { const elementType = key.split('-')[0]; scores[elementType] += parseInt(value); });
+            
+            formData.forEach((value, key) => { 
+                const elementType = key.split('-')[0]; 
+                if (scores.hasOwnProperty(elementType)) {
+                    scores[elementType] += parseInt(value) || 0; 
+                }
+            });
+            
             const highestScore = Math.max(...Object.values(scores));
-            const dominantElement = Object.keys(scores).find(key => scores[key] === highestScore);
-            const resultHTML = `<h3>Dominant Element: ${dominantElement}</h3><strong>Traits:</strong> ${elements[dominantElement].traits}<br><strong>Advice:</strong> ${elements[dominantElement].advice}<br><strong>Careers:</strong> ${elements[dominantElement].careers}`;
+            const dominantElements = Object.keys(scores).filter(key => scores[key] === highestScore);
+            
+            let resultHTML = "<h3>Dominant Element:</h3>";
+            dominantElements.forEach(element => {
+                resultHTML += `<strong>${element}</strong><br>
+                    <strong>Traits:</strong> ${elements[element].traits}<br>
+                    <strong>Advice:</strong> ${elements[element].advice}<br>
+                    <strong>Careers:</strong> ${elements[element].careers}<br><br>`;
+            });
+            
             document.getElementById('result').innerHTML = resultHTML;
             document.getElementById('result').style.display = 'block';
         });
