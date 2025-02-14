@@ -109,7 +109,7 @@
             }
         };
 
-        function populateQuestions() {
+         function populateQuestions() {
             const questionsDiv = document.getElementById('questions');
             questionsDiv.innerHTML = '';
             
@@ -147,23 +147,28 @@
             const scores = { Wood: 0, Fire: 0, Earth: 0 };
             formData.forEach((value, key) => {
                 const elementType = key.split('-')[0];
-                scores[elementType] += parseInt(value);
+                if (scores[elementType] !== undefined) {
+                    scores[elementType] += parseInt(value);
+                }
             });
             
             const highestScore = Math.max(...Object.values(scores));
             const dominantElements = Object.keys(scores).filter(key => scores[key] === highestScore);
             
-            let resultHTML = "<h3>العناصر المسيطرة / Dominant Elements:</h3>";
-            dominantElements.forEach(element => {
-                resultHTML += `
-                    <strong>${element}</strong><br>
-                    <strong>الصفات / Traits:</strong> ${elements[element].traits}<br>
-                    <strong>المهن المحتملة / Careers:</strong> ${elements[element].careers}<br>
-                    <strong>النصائح / Advice:</strong> ${elements[element].advice}<br><br>
-                `;
-            });
-
-            document.getElementById('result').innerHTML = resultHTML;
+            if (dominantElements.length === 0) {
+                document.getElementById('result').innerHTML = "<h3>لم يتم تحديد أي عنصر مسيطر / No dominant element detected.</h3>";
+            } else {
+                let resultHTML = "<h3>العناصر المسيطرة / Dominant Elements:</h3>";
+                dominantElements.forEach(element => {
+                    resultHTML += `
+                        <strong>${element}</strong><br>
+                        <strong>الصفات / Traits:</strong> ${elements[element].traits}<br>
+                        <strong>المهن المحتملة / Careers:</strong> ${elements[element].careers}<br>
+                        <strong>النصائح / Advice:</strong> ${elements[element].advice}<br><br>
+                    `;
+                });
+                document.getElementById('result').innerHTML = resultHTML;
+            }
             document.getElementById('result').style.display = 'block';
         });
 
